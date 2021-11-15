@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/model/student.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 class FormScreen extends StatefulWidget {
   const FormScreen({Key? key}) : super(key: key);
@@ -20,88 +22,147 @@ class _FormScreenState extends State<FormScreen> {
   /// when need have to dealing with multiple TextFormField
   Student myStudent = Student();
 
+  /// Prepare Firebase
+  final Future<FirebaseApp> firebase = Firebase.initializeApp();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Student Exam Record Form",
-        ),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: Form(
-          key: formKey,
+    /*
+    FutureBuilder : create a widget that builds itself based on the lastest
+                    [snapshot] of interaction with the [Future] object
+    */
+    return FutureBuilder(
+        future: firebase,
+        builder: (context, snapshot) {
+          /*
+          Error : check if there's error when try to connect with Firebase
+          */
+          if (snapshot.hasError) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text("Error with Firebase connection"),
+              ),
+              body: Center(
+                child: Text("${snapshot.error}"),
+              ),
+            );
+          }
 
-          /// Wrapped Column with SingleChildScrollView,
-          /// to fix RenderFlex Overflowed,
-          /// RenderFlex Overflowed : caused when Widget overflowed with things
-          ///                         e.g. Keyboard overflowed with Widget
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "First name: ",
-                  style: TextStyle(fontSize: 20),
+          /*
+          Connection succeeded : if connection succeeded
+          */
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  "Student Exam Record Form",
                 ),
-                TextFormField(
-                    // Assign Text form this TextFormField to Student's attribute
-                    onSaved: (String? fname) => myStudent.fname = fname),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  "Last name: ",
-                  style: TextStyle(fontSize: 20),
-                ),
-                TextFormField(
-                    // Assign Text form this TextFormField to Student's attribute
-                    onSaved: (String? lname) => myStudent.lname = lname),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  "Email: ",
-                  style: TextStyle(fontSize: 20),
-                ),
-                TextFormField(
-                    //Assign Text form this TextFormField to Student's attribute
-                    onSaved: (String? email) => myStudent.email = email),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  "Score: ",
-                  style: TextStyle(fontSize: 20),
-                ),
-                TextFormField(
-                    // Assign Text form this TextFormField to Student's attribute
-                    onSaved: (String? score) => myStudent.score = score),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    child: Text(
-                      "Save Data",
-                      style: TextStyle(fontSize: 20),
+              ),
+              body: Container(
+                padding: EdgeInsets.all(20),
+                child: Form(
+                  key: formKey,
+
+                  /// Wrapped Column with SingleChildScrollView,
+                  /// to fix RenderFlex Overflowed,
+                  /// RenderFlex Overflowed : caused when Widget overflowed with things
+                  ///                         e.g. Keyboard overflowed with Widget
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "First name: ",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        TextFormField(
+                            validator: RequiredValidator(
+                                errorText: "First name require!"),
+                            // Assign Text form this TextFormField to Student's attribute
+                            onSaved: (String? fname) =>
+                                myStudent.fname = fname),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Last name: ",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        TextFormField(
+                            validator: RequiredValidator(
+                                errorText: "Last name require!"),
+                            // Assign Text form this TextFormField to Student's attribute
+                            onSaved: (String? lname) =>
+                                myStudent.lname = lname),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Email: ",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        TextFormField(
+                            validator: MultiValidator([
+                              RequiredValidator(errorText: "Email require!"),
+                              EmailValidator(errorText: "Wrong Email format!"),
+                            ]),
+                            keyboardType: TextInputType.emailAddress,
+                            //Assign Text form this TextFormField to Student's attribute
+                            onSaved: (String? email) =>
+                                myStudent.email = email),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          "Score: ",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        TextFormField(
+                            validator:
+                                RequiredValidator(errorText: "Score require!"),
+                            keyboardType: TextInputType.number,
+                            // Assign Text form this TextFormField to Student's attribute
+                            onSaved: (String? score) =>
+                                myStudent.score = score),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            child: Text(
+                              "Save Data",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            onPressed: () {
+                              /// Check validation of TextFormField
+                              if (formKey.currentState!.validate()) {
+                                // Triger all onSaved() of Form widget that this FormState attrached to
+                                formKey.currentState?.save();
+
+                                // Test printing
+                                print("${myStudent.fname}");
+                                print("${myStudent.lname}");
+                                print("${myStudent.email}");
+                                print("${myStudent.score}");
+                              }
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      // Triger all onSaved() of Form widget that this FormState attrached to
-                      formKey.currentState?.save();
-
-                      // Test printing
-                      print("${myStudent.fname}");
-                      print("${myStudent.lname}");
-                      print("${myStudent.email}");
-                      print("${myStudent.score}");
-                    },
                   ),
                 ),
-              ],
+              ),
+            );
+          }
+
+          /*
+          Connection loading : if still connecting to Firebase,
+                               show loading Widget
+          */
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-        ),
-      ),
-    );
+          );
+        });
   }
 }

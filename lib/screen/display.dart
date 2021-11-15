@@ -22,11 +22,15 @@ class _DisplayScreenState extends State<DisplayScreen> {
             /// Connect this StreamBuilder with Firebase Collection named "students"
             stream:
                 FirebaseFirestore.instance.collection("students").snapshots(),
+
+            /// Collection is stored in this <parameter>snapshot<parameter>
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              /// If collection is EMPTY
+              /// If collection is EMPTY or still READING
               if (!snapshot.hasData) {
                 return Center(child: CircularProgressIndicator());
               }
+
+              /// Else if collection is ready
               return ListView(
                 children: snapshot.data!.docs.map((document) {
                   return Container(
@@ -37,7 +41,10 @@ class _DisplayScreenState extends State<DisplayScreen> {
                           child: Text(document["score"]),
                         ),
                       ),
-                      title: Text(document["fname"] + document["lname"]),
+                      title: Text(
+                        document["fname"] + " " + document["lname"],
+                        style: TextStyle(fontSize: 20),
+                      ),
                       subtitle: Text(document["email"]),
                     ),
                   );

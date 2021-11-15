@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_final_fields
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/model/student.dart';
@@ -24,6 +25,21 @@ class _FormScreenState extends State<FormScreen> {
 
   /// Prepare Firebase
   final Future<FirebaseApp> firebase = Firebase.initializeApp();
+
+  /// Create Collection name "students" to store Student data from <field>myStudent<field>,
+  /// to Firebase
+  CollectionReference _studentCollection =
+      FirebaseFirestore.instance.collection("students");
+
+  @override
+  void initState() {
+    super.initState();
+    // startConnectionToFirebase();
+  }
+
+  // void startConnectionToFirebase() async {
+  //   await Firebase.initializeApp();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -131,17 +147,22 @@ class _FormScreenState extends State<FormScreen> {
                               "Save Data",
                               style: TextStyle(fontSize: 20),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               /// Check validation of TextFormField
                               if (formKey.currentState!.validate()) {
                                 // Triger all onSaved() of Form widget that this FormState attrached to
                                 formKey.currentState?.save();
 
-                                // Test printing
-                                print("${myStudent.fname}");
-                                print("${myStudent.lname}");
-                                print("${myStudent.email}");
-                                print("${myStudent.score}");
+                                // Store data from form (in JSON)
+                                await _studentCollection.add({
+                                  "fname": myStudent.fname,
+                                  "lname": myStudent.lname,
+                                  "email": myStudent.email,
+                                  "score": myStudent.score
+                                });
+
+                                // Reset all contexts in form
+                                formKey.currentState?.reset();
                               }
                             },
                           ),

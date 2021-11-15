@@ -1,9 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/screen/display.dart';
 import 'package:flutter_firebase/screen/form_screen.dart';
 
-void main() {
+void main() async {
+  /// Start & Prepare connection with Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -40,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Scaffold(
           backgroundColor: Colors.blue,
           body: TabBarView(
-            children: [FormScreen(), Container()],
+            children: [FormScreen(), DisplayScreen()],
           ),
           bottomNavigationBar: TabBar(
             tabs: [Tab(text: "Exam Grades"), Tab(text: "Student List")],

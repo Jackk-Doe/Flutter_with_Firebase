@@ -1,16 +1,19 @@
 # flutter_firebase
 
-A new Flutter project.
+Learning Resource : https://www.youtube.com/watch?v=jDkKXJQ5xjE&list=PLltVQYLz1BMBUgyhxZFA31of-EKjazC8G&index=4
 
-## Getting Started
+## Form Page
 
-This project is a starting point for a Flutter application.
+<img width="372" alt="Screen Shot 2021-11-16 at 10 52 45 PM" src="https://user-images.githubusercontent.com/74220155/141963806-b1896ae9-ced1-48f0-b52e-312e961fc197.png">
 
-A few resources to get you started if this is your first Flutter project:
+<img width="372" alt="Screen Shot 2021-11-16 at 10 53 38 PM" src="https://user-images.githubusercontent.com/74220155/141963843-111cdbe1-eaf7-4391-aeb9-9ddd60f855d5.png">
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Data showing page : Reading from Firebase
+
+<img width="372" alt="Screen Shot 2021-11-16 at 10 53 45 PM" src="https://user-images.githubusercontent.com/74220155/141964112-dd99e213-a9f6-4547-b8a1-e0ec3f41bfe2.png">
+
+
+## Link with Firebase Firestore
+
+![Screen Shot 2021-11-16 at 10 55 48 PM](https://user-images.githubusercontent.com/74220155/141964635-8ff36535-f7ac-4461-91c3-555b2e878bb4.png)
